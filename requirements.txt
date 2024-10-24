@@ -1,0 +1,4 @@
+requests
+schedule
+sqlite3
+matplotlib
