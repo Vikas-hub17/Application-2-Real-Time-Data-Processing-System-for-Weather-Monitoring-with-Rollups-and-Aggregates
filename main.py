@@ -1,4 +1,3 @@
-from weather.api import fetch_and_store_weather
 from weather.schedule_tasks import start_schedule
 
 if __name__ == "__main__":
