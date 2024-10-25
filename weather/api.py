@@ -1,21 +1,15 @@
 import requests
-from config import API_KEY
+from weather.db import store_weather_data
 
-def kelvin_to_celsius(kelvin):
-    return kelvin - 273.15
+API_KEY = "2a461909a24e249f4bc91f0ff76cc00d"
+BASE_URL = 'https://api.openweathermap.org/data/2.5/weather'
 
-def get_weather_data(city):
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}"
+def fetch_and_store_weather(city):
+    url = f'{BASE_URL}?q={city}&appid={API_KEY}&units=metric'
     response = requests.get(url)
+    data = response.json()
+    
     if response.status_code == 200:
-        data = response.json()
-        return {
-            "city": city,
-            "main": data["weather"][0]["main"],
-            "temp": kelvin_to_celsius(data["main"]["temp"]),
-            "feels_like": kelvin_to_celsius(data["main"]["feels_like"]),
-            "dt": data["dt"]
-        }
+        store_weather_data(city, data)
     else:
-        print(f"Failed to fetch data for {city}")
-        return None
+        raise Exception(f"Error fetching data for {city}: {data['message']}")

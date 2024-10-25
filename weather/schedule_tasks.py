@@ -1,26 +1,19 @@
 import schedule
 import time
-from weather.api import get_weather_data
-from weather.db import store_weather_data
-from config import CITIES, FETCH_INTERVAL
-from weather.processing import calculate_daily_summary
+from weather.api import fetch_and_store_weather
 
-def fetch_and_store_weather():
-    """
-    Fetches weather data for all cities and stores it in the database.
-    """
+CITIES = ['Delhi', 'New York', 'London', 'Tokyo']
+
+def fetch_weather_for_all_cities():
     for city in CITIES:
-        weather_data = get_weather_data(city)
-        if weather_data:
-            store_weather_data(weather_data)
+        try:
+            fetch_and_store_weather(city)
+        except Exception as e:
+            print(f"Error fetching weather for {city}: {e}")
 
 def start_schedule():
-    """
-    Schedules tasks to fetch weather data and calculate daily summaries.
-    """
-    schedule.every(FETCH_INTERVAL).minutes.do(fetch_and_store_weather)
-    schedule.every().day.at("23:59").do(calculate_daily_summary)
-
+    schedule.every(10).minutes.do(fetch_weather_for_all_cities)
+    
     while True:
         schedule.run_pending()
         time.sleep(1)
