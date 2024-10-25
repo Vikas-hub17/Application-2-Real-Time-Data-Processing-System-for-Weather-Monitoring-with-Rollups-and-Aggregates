@@ -4,37 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Weather Summary</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <h1>Daily Weather Summary</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>City</th>
-                <th>Average Temperature (°C)</th>
-                <th>Max Temperature (°C)</th>
-                <th>Min Temperature (°C)</th>
-                <th>Dominant Condition</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in summary %}
-            <tr>
-                <td>{{ row[0] }}</td>
-                <td>{{ row[1] }}</td>
-                <td>{{ row[2] }}</td>
-                <td>{{ row[3] }}</td>
-                <td>{{ row[4] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+    <table>
+        <tr>
+            <th>City</th>
+            <th>Average Temperature (°C)</th>
+            <th>Max Temperature (°C)</th>
+            <th>Min Temperature (°C)</th>
+            <th>Dominant Condition</th>
+        </tr>
+        {% for row in summary %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[3] }}</td>
+            <td>{{ row[4] }}</td>
+        </tr>
+        {% endfor %}
     </table>
 
     <h2>Visualize Trends</h2>
-    <form action="/plot" method="POST">
+    <form method="POST" action="/plot">
         <label for="city">Enter city name:</label>
-        <input type="text" id="city" name="city">
+        <input type="text" id="city" name="city" required>
         <button type="submit">Plot</button>
     </form>
+
+    {% if plot_generated %}
+        <img src="/static/{{ city }}_weather_trends.png" alt="Weather Trends">
+    {% endif %}
 </body>
 </html>

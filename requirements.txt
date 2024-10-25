@@ -1,4 +1,5 @@
-Flask
-requests
-schedule
-matplotlib
+Flask==3.0.3
+requests==2.32.3
+schedule==1.2.2
+matplotlib==3.7.1
+

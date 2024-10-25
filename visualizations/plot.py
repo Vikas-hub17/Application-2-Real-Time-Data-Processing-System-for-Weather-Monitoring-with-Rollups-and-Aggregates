@@ -1,29 +1,27 @@
-import matplotlib.pyplot as plt
 import sqlite3
-
-DATABASE = 'weather_data.db'
+import matplotlib.pyplot as plt
 
 def plot_weather_trends(city):
-    conn = sqlite3.connect(DATABASE)
-    c = conn.cursor()
-    c.execute('''
-        SELECT timestamp, temperature
+    conn = sqlite3.connect('weather_data.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT avg_temp, min_temp, max_temp
         FROM weather
         WHERE city = ?
-        ORDER BY timestamp
     ''', (city,))
-    data = c.fetchall()
+    data = cursor.fetchall()
     conn.close()
 
-    if not data:
-        raise ValueError(f"No data available for {city}")
-
-    timestamps, temperatures = zip(*data)
-    plt.plot(timestamps, temperatures, label=city)
-    plt.xlabel('Timestamp')
-    plt.ylabel('Temperature (°C)')
-    plt.title(f'Temperature Trend for {city}')
-    plt.legend()
-    plt.xticks(rotation=45)
-    plt.tight_layout()
-    plt.savefig(f'{city}_trend.png')
+    if data:
+        avg_temps, min_temps, max_temps = zip(*data)
+        plt.figure(figsize=(10, 5))
+        plt.plot(avg_temps, label='Avg Temp (°C)', color='blue')
+        plt.plot(min_temps, label='Min Temp (°C)', color='green')
+        plt.plot(max_temps, label='Max Temp (°C)', color='red')
+        plt.title(f'Temperature Trends for {city}')
+        plt.xlabel('Time')
+        plt.ylabel('Temperature (°C)')
+        plt.legend()
+        plt.savefig(f'static/{city}_weather_trends.png')
+    else:
+        print(f"No data found for {city}")
